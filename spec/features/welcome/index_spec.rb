@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Welcome Page', type: :feature do
   before :each do
-    @user_1 = User.create!(name: 'Archer', email: 'archer@email.com')
-    @user_2 = User.create!(name: 'Pam', email: 'pam@email.com')
-    @user_3 = User.create!(name: 'Lana', email: 'lana@email.com')
+    @user_1 = User.create!(name: 'Archer', email: 'archer@email.com', password: "123pass")
+    @user_2 = User.create!(name: 'Pam', email: 'pam@email.com', password: "123pass")
+    @user_3 = User.create!(name: 'Lana', email: 'lana@email.com', password: "123pass")
   end
 
   describe "When visiting the root path '/' as a visitor" do
@@ -46,6 +46,12 @@ RSpec.describe 'Welcome Page', type: :feature do
         expect(page).to have_content(@user_2.email)
         expect(page).to have_content(@user_3.email)
       end
+    end
+
+    it 'has a link to go to the login page' do
+      visit root_path
+      
+      expect(page).to have_link("Log In")
     end
   end
 end
