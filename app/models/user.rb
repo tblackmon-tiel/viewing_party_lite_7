@@ -5,7 +5,9 @@ class User < ApplicationRecord
   has_many :parties, through: :party_users
 
   validates :name, presence: true
-  validates :email, presence: true
+  validates :email, presence: true, uniqueness: true
+  validates_presence_of :password
+  has_secure_password
 
   def hosted_parties
     Party.joins(:party_users)

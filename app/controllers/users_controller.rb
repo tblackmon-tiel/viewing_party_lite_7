@@ -6,22 +6,29 @@ class UsersController < ApplicationController
     # @user = User.find(params[:id])
   end
 
-  def new; end
+  def new
+    @user = User.new
+  end
 
   def create
-    user = User.new(user_params)
-    if user.save
-      redirect_to user_path(user)
+    params = user_params
+    params[:email] = params[:email].downcase
+    new_user = User.new(params)
+    if !(params[:password].present? && params[:password_confirmation].present?) || params[:password] != params[:password_confirmation]
+      flash[:error] = 'Your password and confirmation did not match!'
+      render :new
+    elsif new_user.save
       flash[:success] = 'New account created successfully.'
+      redirect_to user_path(new_user)
     else
-      flash[:error] = 'Please fill out BOTH name and email'
-      redirect_to register_path
+      flash[:error] = 'Please fill out the entire form!'
+      render :new
     end
   end
 
   private
 
   def user_params
-    params.permit(:name, :email)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
 end

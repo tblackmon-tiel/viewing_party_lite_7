@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,37 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_231_013_003_117) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_23_185521) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension 'plpgsql'
+  enable_extension "plpgsql"
 
-  create_table 'parties', force: :cascade do |t|
-    t.integer 'movie_id'
-    t.date 'date'
-    t.time 'start_time'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.integer 'duration'
+  create_table "parties", force: :cascade do |t|
+    t.integer "movie_id"
+    t.date "date"
+    t.time "start_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "duration"
   end
 
-  create_table 'party_users', force: :cascade do |t|
-    t.bigint 'user_id', null: false
-    t.bigint 'party_id', null: false
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.boolean 'is_host'
-    t.index ['party_id'], name: 'index_party_users_on_party_id'
-    t.index ['user_id'], name: 'index_party_users_on_user_id'
+  create_table "party_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "party_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_host"
+    t.index ["party_id"], name: "index_party_users_on_party_id"
+    t.index ["user_id"], name: "index_party_users_on_user_id"
   end
 
-  create_table 'users', force: :cascade do |t|
-    t.string 'name'
-    t.string 'email'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['email'], name: 'index_users_on_email', unique: true
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "password_digest"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key 'party_users', 'parties'
-  add_foreign_key 'party_users', 'users'
+  add_foreign_key "party_users", "parties"
+  add_foreign_key "party_users", "users"
 end
