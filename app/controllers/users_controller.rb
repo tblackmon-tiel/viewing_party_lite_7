@@ -15,6 +15,7 @@ class UsersController < ApplicationController
     params[:email] = params[:email].downcase
     new_user = User.new(params)
     if new_user.save
+      session[:user_id] = new_user.id
       flash[:success] = 'New account created successfully.'
       redirect_to user_path(new_user)
     else
@@ -29,12 +30,18 @@ class UsersController < ApplicationController
   def login
     user = User.find_by(email: params[:email])
     if user&.authenticate(params[:password])
+      session[:user_id] = user.id
       flash[:success] = "Logged in successfully!"
       redirect_to user_path(user)
     else
       flash[:error] = "Sorry, your credentials are incorrect!"
       render :login_form
     end
+  end
+
+  def logout
+    session.delete(:user_id)
+    redirect_to root_path
   end
 
   private

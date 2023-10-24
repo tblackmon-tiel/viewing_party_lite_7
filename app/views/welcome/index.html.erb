@@ -1,10 +1,15 @@
 <div id="homepage-buttons">
+  <% if session[:user_id] %>
+    <%= link_to "Log Out", logout_path %>
+  <% else %>
     <p><%= link_to "Create an Account", register_path %></p>
     <p><%= link_to "Log In", login_path %></p>
-    <div id="all-users">
-      <h3>Existing Users</h3>
-      <% @users.each do |user| %>
-        <p><%= link_to user.email, user_path(user) %></p>
-      <% end %>
-    </div>
+  <% end %>
+
+  <div id="all-users">
+    <h3>Existing Users</h3>
+    <% @users.each do |user| %>
+      <p><%= link_to user.email, user_path(user) %></p>
+    <% end %>
+  </div>
 </div> 
