@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe 'Users Show page', type: :feature do
   describe 'When I visit the users show page' do
     before(:each) do
-      @user_1 = User.create!(name: 'Kiwi', email: 'kiwibird@gmail.com')
-      @user_2 = User.create!(name: 'Chicken', email: 'chickenbird@gmail.com')
+      @user_1 = User.create!(name: 'Kiwi', email: 'kiwibird@gmail.com', password: "123pass")
+      @user_2 = User.create!(name: 'Chicken', email: 'chickenbird@gmail.com', password: "123pass")
       @party_1 = Party.create!(movie_id: 926_393, duration: 109, date: '2024-10-10', start_time: '07:23')
       @party_2 = Party.create!(movie_id: 926_393, duration: 109, date: '2024-10-11', start_time: '09:23')
       @party_3 = Party.create!(movie_id: 926_393, duration: 109, date: '2024-10-12', start_time: '13:09')
@@ -17,6 +17,11 @@ RSpec.describe 'Users Show page', type: :feature do
       PartyUser.create!(user_id: @user_2.id, party_id: @party_2.id, is_host: true)
       PartyUser.create!(user_id: @user_1.id, party_id: @party_3.id, is_host: false)
       PartyUser.create!(user_id: @user_2.id, party_id: @party_3.id, is_host: true)
+
+      visit login_path
+      fill_in :email, with: @user_1.email
+      fill_in :password, with: @user_1.password
+      click_button "Log In"
 
       visit "/users/#{@user_1.id}"
     end
@@ -34,6 +39,15 @@ RSpec.describe 'Users Show page', type: :feature do
 
     it 'has a section for viewing parties' do
       expect(page).to have_css('#hosted-parties')
+    end
+
+    it 'returns the user to the landing page if they are not logged in' do
+      visit root_path
+      click_link "Log Out"
+
+      visit dashboard_path
+      expect(page).to have_current_path(root_path)
+      expect(page).to have_content("You must be logged in to view your dashboard!")
     end
 
     context 'displaying viewing parties' do
