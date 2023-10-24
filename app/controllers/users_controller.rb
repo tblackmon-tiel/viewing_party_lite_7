@@ -2,8 +2,12 @@
 
 class UsersController < ApplicationController
   def show
-    @facade = UserFacade.new(params[:id])
-    # @user = User.find(params[:id])
+    if session[:user_id]
+      @facade = UserFacade.new(params[:id])
+    else
+      flash[:error] = "You must be logged in to view your dashboard!"
+      redirect_to root_path
+    end
   end
 
   def new
