@@ -5,15 +5,20 @@ require 'rails_helper'
 RSpec.describe 'Viewing Party New page', type: :feature do
   describe 'when I visit the viewing party new page' do
     before(:each) do
-      @user_1 = User.create!(name: 'Kiwi', email: 'kiwibird@gmail.com')
-      @user_2 = User.create!(name: 'Chicken', email: 'chickenbird@gmail.com')
-      @user_3 = User.create!(name: 'Coco', email: 'cocobird@gmail.com')
-      @user_4 = User.create!(name: 'Hiccup', email: 'hiccupbird@gmail.com')
+      @user_1 = User.create!(name: 'Kiwi', email: 'kiwibird@gmail.com', password: "123pass")
+      @user_2 = User.create!(name: 'Chicken', email: 'chickenbird@gmail.com', password: "123pass")
+      @user_3 = User.create!(name: 'Coco', email: 'cocobird@gmail.com', password: "123pass")
+      @user_4 = User.create!(name: 'Hiccup', email: 'hiccupbird@gmail.com', password: "123pass")
       @movie_id = 926_393
 
       json_response = File.read('spec/fixtures/movie_details.json')
       stub_request(:get, "https://api.themoviedb.org/3/movie/#{@movie_id}?api_key=#{Rails.application.credentials.tmdb[:key]}")
         .to_return(status: 200, body: json_response)
+
+      visit login_path
+      fill_in :email, with: @user_1.email
+      fill_in :password, with: @user_1.password
+      click_button "Log In"
 
       visit new_user_movie_viewing_party_path(@user_1.id, @movie_id)
     end
@@ -68,6 +73,22 @@ RSpec.describe 'Viewing Party New page', type: :feature do
 
       expect(page).to have_current_path(new_user_movie_viewing_party_path(@user_1.id, @movie_id))
       expect(page).to have_content("Please fill out the entire form!")
+    end
+
+    it "Should return the user to the movies show page and provide an error if they're not logged in" do
+      json_response = File.read('spec/fixtures/movie_credits.json')
+      stub_request(:get, "https://api.themoviedb.org/3/movie/#{@movie_id}/credits?api_key=#{Rails.application.credentials.tmdb[:key]}")
+        .to_return(status: 200, body: json_response)
+
+      json_response = File.read('spec/fixtures/movie_reviews.json')
+      stub_request(:get, "https://api.themoviedb.org/3/movie/#{@movie_id}/reviews?api_key=#{Rails.application.credentials.tmdb[:key]}")
+        .to_return(status: 200, body: json_response)
+        
+      visit root_path
+      click_link "Log Out"
+
+      visit new_user_movie_viewing_party_path(@user_1.id, @movie_id)
+      expect(page).to have_current_path(user_movie_path(@user_1.id, @movie_id))
     end
   end
 end
