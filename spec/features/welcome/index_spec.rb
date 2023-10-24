@@ -37,15 +37,14 @@ RSpec.describe 'Welcome Page', type: :feature do
       expect(current_path).to eq(register_path)
     end
 
-    it 'lists all users names' do
+    it 'DOES NOT list all users names' do
       visit root_path
 
-      within('div#all-users') do
-        expect(page).to have_content('Existing Users')
-        expect(page).to have_content(@user_1.email)
-        expect(page).to have_content(@user_2.email)
-        expect(page).to have_content(@user_3.email)
-      end
+      expect(page).to_not have_css("#all-users")
+      expect(page).to_not have_content('Existing Users')
+      expect(page).to_not have_content(@user_1.email)
+      expect(page).to_not have_content(@user_2.email)
+      expect(page).to_not have_content(@user_3.email)
     end
 
     it 'has a link to go to the login page' do
